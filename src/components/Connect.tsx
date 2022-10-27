@@ -1,13 +1,45 @@
+import { useEffect, useState } from 'react'
 import { useAccount, useConnect, useDisconnect } from 'wagmi'
+import { InjectedConnector } from 'wagmi/connectors/injected'
 
 import { useIsMounted } from '../hooks'
 
 export function Connect() {
   const isMounted = useIsMounted()
   const { connector, isConnected } = useAccount()
-  const { connect, connectors, error, isLoading, pendingConnector } =
-    useConnect()
+  const {
+    connect,
+    connectors: allConnectors,
+    error,
+    isLoading,
+    pendingConnector,
+  } = useConnect()
   const { disconnect } = useDisconnect()
+  const [connectors, setConnectors] = useState(allConnectors)
+  const injectedConnector = new InjectedConnector()
+
+  useEffect(() => {
+    const connectors = allConnectors.filter((x) => x.id !== 'injected')
+    setConnectors(connectors)
+  }, [])
+
+  const connectBitKeep = () => {
+    if ((window as any).bitkeep && (window as any).bitkeep.ethereum) {
+      window.ethereum = (window as any).bitkeep.ethereum
+      connect({ connector: injectedConnector })
+    } else {
+      alert('BitKeep wallet not installed')
+    }
+  }
+
+  const connectBinance = () => {
+    if ((window as any).BinanceChain) {
+      window.ethereum = (window as any).BinanceChain
+      connect({ connector: injectedConnector })
+    } else {
+      alert('Binance wallet not installed')
+    }
+  }
 
   return (
     <div className="flex flex-col items-center mb-6">
@@ -33,6 +65,22 @@ export function Connect() {
               {isLoading && x.id === pendingConnector?.id && ' (connecting)'}
             </button>
           ))}
+
+        <button
+          key={'bitkeep'}
+          onClick={connectBitKeep}
+          className="block w-full mb-2 bg-neutral-100 font-sans py-2 px-3 rounded text-neutral-900"
+        >
+          BitKeep
+        </button>
+
+        <button
+          key={'binance'}
+          onClick={connectBinance}
+          className="block w-full mb-2 bg-neutral-100 font-sans py-2 px-3 rounded text-neutral-900"
+        >
+          Binance
+        </button>
       </div>
 
       {error && <div className="pt-3 text-red-500">{error.message}</div>}
