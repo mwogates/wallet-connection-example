@@ -1,3 +1,4 @@
+import { Ethereum } from '@wagmi/core'
 import { useEffect, useState } from 'react'
 import { useAccount, useConnect, useDisconnect } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
@@ -15,8 +16,9 @@ export function Connect() {
     pendingConnector,
   } = useConnect()
   const { disconnect } = useDisconnect()
-  const [connectors, setConnectors] = useState(allConnectors)
   const injectedConnector = new InjectedConnector()
+  const [connectors, setConnectors] = useState(allConnectors)
+  const [metaMaskEthereum, setMetaMaskEthereum] = useState<Ethereum>()
 
   useEffect(() => {
     const connectors = allConnectors.filter((x) => x.id !== 'injected')
@@ -25,6 +27,7 @@ export function Connect() {
 
   const connectBitKeep = () => {
     if ((window as any).bitkeep && (window as any).bitkeep.ethereum) {
+      setMetaMaskEthereum(window.ethereum)
       window.ethereum = (window as any).bitkeep.ethereum
       connect({ connector: injectedConnector })
     } else {
@@ -34,6 +37,7 @@ export function Connect() {
 
   const connectBinance = () => {
     if ((window as any).BinanceChain) {
+      setMetaMaskEthereum(window.ethereum)
       window.ethereum = (window as any).BinanceChain
       connect({ connector: injectedConnector })
     } else {
@@ -41,12 +45,17 @@ export function Connect() {
     }
   }
 
+  const disconnectWallet = () => {
+    window.ethereum = metaMaskEthereum
+    disconnect()
+  }
+
   return (
     <div className="flex flex-col items-center mb-6">
       <div className="flex flex-col items-center border border-neutral-200 rounded pt-4 pb-2 px-8 w-full sm:w-1/2">
         {isConnected && (
           <button
-            onClick={() => disconnect()}
+            onClick={() => disconnectWallet()}
             className="block w-full mb-5 bg-neutral-100 font-sans py-2 px-3 rounded text-neutral-900"
           >
             Disconnect from {connector?.name}
