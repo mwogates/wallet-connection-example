@@ -10,10 +10,13 @@ export function Connect() {
   const { disconnect } = useDisconnect()
 
   return (
-    <div>
-      <div>
+    <div className="flex flex-col items-center mb-6">
+      <div className="flex flex-col items-center border border-neutral-200 rounded pt-4 pb-2 px-8 w-full sm:w-1/2">
         {isConnected && (
-          <button onClick={() => disconnect()}>
+          <button
+            onClick={() => disconnect()}
+            className="block w-full mb-5 bg-neutral-100 font-sans py-2 px-3 rounded text-neutral-900"
+          >
             Disconnect from {connector?.name}
           </button>
         )}
@@ -21,14 +24,18 @@ export function Connect() {
         {connectors
           .filter((x) => isMounted && x.ready && x.id !== connector?.id)
           .map((x) => (
-            <button key={x.id} onClick={() => connect({ connector: x })}>
+            <button
+              key={x.id}
+              onClick={() => connect({ connector: x })}
+              className="block w-full mb-2 bg-neutral-100 font-sans py-2 px-3 rounded text-neutral-900"
+            >
               {x.name}
               {isLoading && x.id === pendingConnector?.id && ' (connecting)'}
             </button>
           ))}
       </div>
 
-      {error && <div>{error.message}</div>}
+      {error && <div className="pt-3 text-red-500">{error.message}</div>}
     </div>
   )
 }
