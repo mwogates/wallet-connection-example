@@ -8,7 +8,7 @@ export function Account() {
   const { data: ensNameData } = useEnsName({ address })
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center mb-4">
       <div className="flex flex-col items-center border border-neutral-200 rounded pt-4 pb-2 px-8 w-full sm:w-1/2">
         <span className="text-lg font-semibold text-white">Account Information</span>
         <span className="font-sans text-neutral-100">

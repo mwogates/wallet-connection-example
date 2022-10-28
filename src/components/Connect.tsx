@@ -51,7 +51,7 @@ export function Connect() {
   }
 
   return (
-    <div className="flex flex-col items-center mb-6">
+    <div className="flex flex-col items-center mb-4">
       <div className="flex flex-col items-center border border-neutral-200 rounded pt-4 pb-2 px-8 w-full sm:w-1/2">
         {isConnected && (
           <button
