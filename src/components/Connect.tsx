@@ -46,7 +46,9 @@ export function Connect() {
   }
 
   const disconnectWallet = () => {
-    window.ethereum = metaMaskEthereum
+    if (metaMaskEthereum) {
+      window.ethereum = metaMaskEthereum
+    }
     disconnect()
   }
 
